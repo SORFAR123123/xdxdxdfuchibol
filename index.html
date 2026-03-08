@@ -614,54 +614,30 @@
 </div>
 
 <script>
-// ─────────────────────────────────────────────
-// DATA — mismo contenido que channels.json
-// Para cargar desde JSON externo:
-// fetch('channels.json').then(r=>r.json()).then(d=>{ DATA=d; renderHome(); })
-// ─────────────────────────────────────────────
-const DATA = {
-  "providers": [
-    {
-      "id": "espn",
-      "name": "ESPN",
-      "logo": "ESPN",
-      "color": "#CC0000",
-      "channels": [
-        { "id": "espn1",       "name": "ESPN 1",       "number": 1, "url": "",                                "live": false },
-        { "id": "espn2",       "name": "ESPN 2",       "number": 2, "url": "https://bolaloca.my/player/2/71", "live": true  },
-        { "id": "espn3",       "name": "ESPN 3",       "number": 3, "url": "",                                "live": false },
-        { "id": "espn4",       "name": "ESPN 4",       "number": 4, "url": "",                                "live": false },
-        { "id": "espnpremium", "name": "ESPN Premium", "number": 5, "url": "",                                "live": false },
-        { "id": "espnextra",   "name": "ESPN Extra",   "number": 6, "url": "",                                "live": false }
-      ]
-    },
-    {
-      "id": "fox",
-      "name": "Fox Sports",
-      "logo": "FOX",
-      "color": "#003087",
-      "channels": [
-        { "id": "fox1", "name": "Fox Sports 1", "number": 1, "url": "", "live": false },
-        { "id": "fox2", "name": "Fox Sports 2", "number": 2, "url": "", "live": false },
-        { "id": "fox3", "name": "Fox Sports 3", "number": 3, "url": "", "live": false }
-      ]
-    },
-    {
-      "id": "dsports",
-      "name": "DSports",
-      "logo": "D+",
-      "color": "#0064ff",
-      "channels": [
-        { "id": "ds1", "name": "DSports 1", "number": 1, "url": "", "live": false },
-        { "id": "ds2", "name": "DSports 2", "number": 2, "url": "", "live": false },
-        { "id": "ds3", "name": "DSports 3", "number": 3, "url": "", "live": false }
-      ]
-    }
-  ]
-};
-
+let DATA = null;
 let curProvider = null;
 let curChannel  = null;
+
+// ── LOAD channels.json ──
+fetch('channels.json')
+  .then(r => {
+    if (!r.ok) throw new Error('No se pudo cargar channels.json');
+    return r.json();
+  })
+  .then(data => {
+    DATA = data;
+    renderHome();
+  })
+  .catch(err => {
+    document.getElementById('providersGrid').innerHTML =
+      `<div style="color:#ff4444;font-family:'Oswald',sans-serif;letter-spacing:2px;padding:20px">
+        ⚠ ERROR: No se encontró channels.json<br>
+        <span style="font-size:0.75rem;color:#666;font-family:'Barlow',sans-serif">
+          Asegúrate de que channels.json está en la misma carpeta que index.html
+        </span>
+      </div>`;
+    console.error(err);
+  });
 
 // ── RENDER HOME ──
 function renderHome() {
@@ -782,7 +758,58 @@ function setBreadcrumb(items) {
 }
 
 renderHome();
+
+// ── POPUP BLOCKER ──
+// 1. Bloquea window.open global
+window.open = () => null;
+
+// 2. Cada vez que se inserta un iframe nuevo, le aplicamos bloqueos
+new MutationObserver(() => {
+  const iframe = document.querySelector('#iframeBox iframe');
+  if (!iframe || iframe._blocked) return;
+  iframe._blocked = true;
+
+  // Intentar anular window.open dentro del iframe (mismo origen)
+  iframe.addEventListener('load', () => {
+    try { iframe.contentWindow.open = () => null; } catch(e) {}
+  });
+
+  // Capa encima del iframe que intercepta el primer click "unmute"
+  // y lo reenvía sin dejar que propague a los anuncios
+  const box = document.getElementById('iframeBox');
+  box.style.position = 'relative';
+
+  let shield = box.querySelector('.ad-shield');
+  if (!shield) {
+    shield = document.createElement('div');
+    shield.className = 'ad-shield';
+    shield.style.cssText = `
+      position:absolute;inset:0;z-index:9;
+      display:flex;align-items:center;justify-content:center;
+      background:rgba(0,0,0,0.45);cursor:pointer;
+    `;
+    shield.innerHTML = `
+      <div style="
+        font-family:'Oswald',sans-serif;
+        font-size:1rem;letter-spacing:3px;
+        background:#CC0000;color:#fff;
+        padding:12px 28px;border-radius:6px;
+        pointer-events:none;
+      ">▶ REPRODUCIR</div>
+    `;
+    shield.addEventListener('click', () => {
+      // Simula click en el iframe de forma segura y quita el escudo
+      shield.remove();
+      try { iframe.contentWindow.focus(); } catch(e) {}
+    });
+    box.appendChild(shield);
+  }
+}).observe(document.getElementById('iframeBox'), { childList: true });
+
+// 3. Si la página pierde foco (popup intentó abrirse), lo cerramos y volvemos
+window.addEventListener('blur', () => {
+  setTimeout(() => { window.focus(); }, 50);
+});
 </script>
 </body>
 </html>
-
