@@ -1,0 +1,130 @@
+{
+  "providers": [
+    {
+      "id": "espn",
+      "name": "ESPN",
+      "logo": "ESPN",
+      "color": "#CC0000",
+      "accent": "#ff4444",
+      "icon": "📺",
+      "channels": [
+        {
+          "id": "espn1",
+          "name": "ESPN 1",
+          "number": 1,
+          "url": "",
+          "live": false,
+          "match": ""
+        },
+        {
+          "id": "espn2",
+          "name": "ESPN 2",
+          "number": 2,
+          "url": "https://bolaloca.my/player/2/71",
+          "live": true,
+          "match": "EN VIVO"
+        },
+        {
+          "id": "espn3",
+          "name": "ESPN 3",
+          "number": 3,
+          "url": "",
+          "live": false,
+          "match": ""
+        },
+        {
+          "id": "espn4",
+          "name": "ESPN 4",
+          "number": 4,
+          "url": "",
+          "live": false,
+          "match": ""
+        },
+        {
+          "id": "espnpremium",
+          "name": "ESPN Premium",
+          "number": 5,
+          "url": "",
+          "live": false,
+          "match": ""
+        },
+        {
+          "id": "espnextra",
+          "name": "ESPN Extra",
+          "number": 6,
+          "url": "",
+          "live": false,
+          "match": ""
+        }
+      ]
+    },
+    {
+      "id": "fox",
+      "name": "Fox Sports",
+      "logo": "FOX",
+      "color": "#003087",
+      "accent": "#0050c8",
+      "icon": "🦊",
+      "channels": [
+        {
+          "id": "fox1",
+          "name": "Fox Sports 1",
+          "number": 1,
+          "url": "",
+          "live": false,
+          "match": ""
+        },
+        {
+          "id": "fox2",
+          "name": "Fox Sports 2",
+          "number": 2,
+          "url": "",
+          "live": false,
+          "match": ""
+        },
+        {
+          "id": "fox3",
+          "name": "Fox Sports 3",
+          "number": 3,
+          "url": "",
+          "live": false,
+          "match": ""
+        }
+      ]
+    },
+    {
+      "id": "dsports",
+      "name": "DSports",
+      "logo": "D+",
+      "color": "#0064ff",
+      "accent": "#3d8bff",
+      "icon": "🎯",
+      "channels": [
+        {
+          "id": "dsports1",
+          "name": "DSports 1",
+          "number": 1,
+          "url": "",
+          "live": false,
+          "match": ""
+        },
+        {
+          "id": "dsports2",
+          "name": "DSports 2",
+          "number": 2,
+          "url": "",
+          "live": false,
+          "match": ""
+        },
+        {
+          "id": "dsports3",
+          "name": "DSports 3",
+          "number": 3,
+          "url": "",
+          "live": false,
+          "match": ""
+        }
+      ]
+    }
+  ]
+}
